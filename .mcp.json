@@ -1,0 +1,35 @@
+{
+    "mcpServers": {
+        "playwright": {
+            "command": "npx",
+            "args": [
+                "@playwright/mcp@latest"
+            ]
+        },
+        "remotion-documentation": {
+            "command": "npx",
+            "args": [
+                "@remotion/mcp@latest"
+            ]
+        },
+        "context7": {
+            "serverUrl": "https://mcp.context7.com/mcp",
+            "headers": {
+                "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
+            }
+        },
+        "ui-kit": {
+            "command": "npx",
+            "args": [
+                "@ui-kit.ai/mcp-server"
+            ]
+        },
+        "shadcn": {
+            "command": "npx",
+            "args": [
+                "shadcn@latest",
+                "mcp"
+            ]
+        }
+    }
+}

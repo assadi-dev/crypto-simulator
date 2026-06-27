@@ -1,0 +1,55 @@
+services:
+  # ── Base de données PostgreSQL (image Supabase : Postgres + extensions) ──
+  postgres:
+    image: supabase/postgres:15.8.1.060
+    container_name: crypto-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-crypto}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ── Supabase : API meta (lecture du schéma PostgreSQL pour Studio) ──
+  supabase-meta:
+    image: supabase/postgres-meta:v0.84.2
+    container_name: crypto-supabase-meta
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PG_META_PORT: 8080
+      PG_META_DB_HOST: postgres
+      PG_META_DB_PORT: 5432
+      PG_META_DB_NAME: ${POSTGRES_DB:-crypto}
+      PG_META_DB_USER: ${POSTGRES_USER:-postgres}
+      PG_META_DB_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+
+  # ── Supabase Studio : interface web d'administration de la base ──
+  supabase-studio:
+    image: supabase/studio:2025.06.30-sha-6f5982d
+    container_name: crypto-supabase-studio
+    restart: unless-stopped
+    depends_on:
+      - supabase-meta
+    ports:
+      - "54323:3000"
+    environment:
+      STUDIO_PG_META_URL: http://supabase-meta:8080
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      DEFAULT_ORGANIZATION_NAME: ${ORGANIZATION_NAME:-Crypto Simulator}
+      DEFAULT_PROJECT_NAME: ${PROJECT_NAME:-crypto-simulator}
+      SUPABASE_URL: http://supabase-meta:8080
+      SUPABASE_PUBLIC_URL: http://localhost:54323
+
+volumes:
+  postgres-data:
