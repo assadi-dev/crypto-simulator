@@ -36,3 +36,9 @@ au bon moment plutôt que de répondre de mémoire.
 Des skills de design sont disponibles dans [.claude/skills/](.claude/skills/) :
 `frontend-design`, `ui-skills`, `ui-ux-designer`, `ui-ux-pro-max`. Mobilise-les pour les
 décisions de DA, de typographie et de systèmes de composants.
+
+## Conventions de code
+
+Règles détaillées dans [.claude/rules/conventions-code.md](.claude/rules/conventions-code.md) :
+pas de CSS inline, logique métier dans des hooks custom, principes SOLID, colocation par page
+(`_components`, `_hooks`, `_types`, `dto`), schémas Zod dans les DTO.
