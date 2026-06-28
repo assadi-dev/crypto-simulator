@@ -13,8 +13,11 @@ export default function Home() {
         <span className="eyebrow animate-fade-up">Simulateur crypto</span>
 
         <h1 className="animate-fade-up fade-delay-1 text-balance text-4xl leading-[1.1] text-white sm:text-5xl">
-          Le simulateur de calcul de plus-value crypto
+          calcul de plus-value crypto
         </h1>
+        <p className="animate-fade-up fade-delay-2 max-w-md text-pretty text-base text-primary">
+          Le simulateur de calcul de plus-value crypto
+        </p>
 
         <p className="animate-fade-up fade-delay-2 max-w-md text-pretty text-base text-muted-foreground">
           Choisissez une cryptomonnaie, un montant et une période : le simulateur
