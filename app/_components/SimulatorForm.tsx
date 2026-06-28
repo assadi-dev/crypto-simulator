@@ -27,17 +27,19 @@ import { DateField } from "./DateField";
 
 type SimulatorFormProps = {
   onSimulate?: (values: SimulatorInput) => void;
+  isLoading?: boolean;
 };
 
 const notInFuture = (date: Date) => date > new Date();
 
-export function SimulatorForm({ onSimulate }: SimulatorFormProps) {
+export function SimulatorForm({ onSimulate, isLoading = false }: SimulatorFormProps) {
   const { form, onSubmit } = useSimulatorForm(onSimulate);
   const {
     register,
     control,
     formState: { errors, isSubmitting },
   } = form;
+  const pending = isSubmitting || isLoading;
 
   return (
     <Card className="w-full max-w-xl border-white/10 bg-white/[0.04] backdrop-blur-xl">
@@ -154,10 +156,10 @@ export function SimulatorForm({ onSimulate }: SimulatorFormProps) {
 
           <Button
             type="submit"
-            disabled={isSubmitting}
+            disabled={pending}
             className="mt-1 h-11 rounded-full px-6"
           >
-            Lancer la simulation
+            {pending ? "Calcul en cours…" : "Lancer la simulation"}
           </Button>
         </form>
       </CardContent>
