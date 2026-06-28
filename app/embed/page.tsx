@@ -19,7 +19,7 @@ export default function EmbedPage() {
         aria-hidden
         className="glow-radial pointer-events-none absolute top-0 left-1/2 size-[480px] -translate-x-1/2"
       />
-      <div className="relative z-10 w-full max-w-2xl">
+      <div className="relative z-10 w-full max-w-5xl">
         <Simulator />
       </div>
       <EmbedAutoHeight />

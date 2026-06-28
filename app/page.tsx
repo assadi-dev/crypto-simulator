@@ -9,7 +9,7 @@ export default function Home() {
         className="glow-radial pointer-events-none absolute top-0 left-1/2 size-[720px] -translate-x-1/2"
       />
 
-      <section className="relative z-10 flex w-full max-w-2xl flex-col items-center gap-8 text-center">
+      <section className="relative z-10 flex w-full max-w-5xl flex-col items-center gap-8 text-center">
         <span className="eyebrow">Simulateur crypto</span>
 
         <h1 className="text-balance text-4xl leading-[1.1] text-white sm:text-5xl">

@@ -35,6 +35,8 @@ export interface BacktestPoint {
   value: number;
   /** Quantité de crypto détenue à cette date. */
   units: number;
+  /** Prix de la crypto à cette date. */
+  price: number;
 }
 
 export interface BacktestResult {
@@ -174,6 +176,7 @@ export function runBacktest(params: BacktestParams): BacktestResult {
       invested: cumInvested,
       units: cumUnits,
       value: cumUnits * point.price,
+      price: point.price,
     });
   }
 

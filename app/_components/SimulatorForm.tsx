@@ -1,8 +1,7 @@
 "use client";
 
-import { Controller } from "react-hook-form";
+import { Controller, type UseFormReturn } from "react-hook-form";
 
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -21,37 +20,34 @@ import {
 } from "@/components/ui/select";
 
 import type { SimulatorInput } from "../dto/simulator.schema";
-import { useSimulatorForm } from "../_hooks/useSimulatorForm";
 import { CRYPTO_OPTIONS, FREQUENCY_OPTIONS } from "../_types/simulator";
 import { DateField } from "./DateField";
 
 type SimulatorFormProps = {
-  onSimulate?: (values: SimulatorInput) => void;
-  isLoading?: boolean;
+  form: UseFormReturn<SimulatorInput>;
 };
 
 const notInFuture = (date: Date) => date > new Date();
 
-export function SimulatorForm({ onSimulate, isLoading = false }: SimulatorFormProps) {
-  const { form, onSubmit } = useSimulatorForm(onSimulate);
+/** Formulaire de saisie (présentationnel). Le calcul est déclenché en temps réel par le parent. */
+export function SimulatorForm({ form }: SimulatorFormProps) {
   const {
     register,
     control,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = form;
-  const pending = isSubmitting || isLoading;
 
   return (
-    <Card className="w-full max-w-xl border-white/10 bg-white/[0.04] backdrop-blur-xl">
+    <Card className="w-full border-white/10 bg-white/4 backdrop-blur-xl">
       <CardHeader>
-        <CardTitle className="text-xl">Simuler un investissement crypto</CardTitle>
+        <CardTitle className="text-xl">Simulation</CardTitle>
         <CardDescription>
           Estimez la performance passée d&apos;un placement, en une fois ou de
           façon récurrente (DCA).
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={onSubmit} className="grid gap-5" noValidate>
+        <form className="grid gap-5" noValidate>
           {/* Cryptomonnaie */}
           <div className="grid gap-2">
             <Label htmlFor="crypto">Cryptomonnaie</Label>
@@ -153,14 +149,6 @@ export function SimulatorForm({ onSimulate, isLoading = false }: SimulatorFormPr
               <FieldError message={errors.endDate?.message} />
             </div>
           </div>
-
-          <Button
-            type="submit"
-            disabled={pending}
-            className="mt-1 h-11 rounded-full px-6"
-          >
-            {pending ? "Calcul en cours…" : "Lancer la simulation"}
-          </Button>
         </form>
       </CardContent>
     </Card>

@@ -21,22 +21,15 @@ function getDefaultValues(): SimulatorInput {
 }
 
 /**
- * Encapsule la logique du formulaire de simulation (validation Zod + soumission).
- * Le composant reste présentationnel : il consomme `form` et `onSubmit`.
+ * Initialise le formulaire de simulation (validation Zod + valeurs par défaut).
+ * Le calcul est déclenché en temps réel par l'orchestrateur qui observe le form.
  */
-export function useSimulatorForm(
-  onValidSubmit?: (values: SimulatorInput) => void,
-) {
+export function useSimulatorForm() {
   const form = useForm<SimulatorInput>({
     resolver: zodResolver(simulatorSchema),
     defaultValues: getDefaultValues(),
-    mode: "onTouched",
+    mode: "onChange",
   });
 
-  const onSubmit = form.handleSubmit((values) => {
-    // Le moteur de calcul (backtesting one-shot / DCA) sera branché ici à l'étape suivante.
-    onValidSubmit?.(values);
-  });
-
-  return { form, onSubmit };
+  return { form };
 }
