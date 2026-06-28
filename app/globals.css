@@ -113,24 +113,29 @@
 
 /* Thème sombre = DA de référence S'investir */
 .dark {
-  --background: #080c16; /* --surface */
+  --background: #080c16;
+  /* --surface */
   --foreground: #ffffff;
-  --card: #0b1322; /* surface translucide rendue solide pour les popovers */
+  --card: #0b1322;
+  /* surface translucide rendue solide pour les popovers */
   --card-foreground: #ffffff;
   --popover: #0b1322;
   --popover-foreground: #ffffff;
-  --primary: var(--brand); /* #0049C6 */
+  --primary: var(--brand);
+  /* #0049C6 */
   --primary-foreground: #ffffff;
   --secondary: rgba(255, 255, 255, 0.06);
   --secondary-foreground: #ffffff;
   --muted: rgba(255, 255, 255, 0.04);
   --muted-foreground: rgba(255, 255, 255, 0.72);
-  --accent: #0e2350; /* survol bleuté */
+  --accent: #0e2350;
+  /* survol bleuté */
   --accent-foreground: #ffffff;
   --destructive: oklch(0.704 0.191 22.216);
   --border: rgba(255, 255, 255, 0.08);
   --input: rgba(255, 255, 255, 0.1);
-  --ring: var(--brand-bright); /* #1098F7 */
+  --ring: var(--brand-bright);
+  /* #1098F7 */
   --chart-1: var(--brand-bright);
   --chart-2: var(--brand);
   --chart-3: var(--accent-gold);
@@ -150,13 +155,16 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-sans);
   }
+
   html {
     @apply font-sans;
   }
+
   /* Titres en Plus Jakarta Sans + tracking serré (look éditorial de la DA) */
   h1,
   h2,
@@ -172,6 +180,7 @@
  * Valeurs exactes relevées dans design.md §6.
  */
 @layer components {
+
   /* Eyebrow / sur-titre en pilule */
   .eyebrow {
     display: inline-flex;
@@ -195,19 +204,23 @@
 
   /* Dégradé de fond hero : nuit bleutée vers noir */
   .bg-hero {
-    background: linear-gradient(126.82deg, #000519 28.59%, #000000 85.18%);
+    /* Dégradé diagonal aux bleus de design.md (haut/droite -> bas/gauche) :
+       brand-deep #04265F -> surface-elevated #00173F -> hero-1 #000519 -> hero-2 #000000. */
+    background: linear-gradient(205deg,
+        #04265f 0%,
+        #00173f 8%,
+        #000519 35%,
+        #000000 100%);
   }
 
   /* Halo radial bleu (à poser sur un élément positionné, ex. derrière le hero) */
   .glow-radial {
-    background: radial-gradient(
-      circle,
-      rgba(16, 152, 247, 0.18) 0%,
-      rgba(8, 111, 227, 0.12) 24%,
-      rgba(0, 73, 198, 0.07) 40%,
-      rgba(0, 0, 49, 0.02) 56%,
-      rgba(0, 0, 0, 0) 74%
-    );
+    background: radial-gradient(circle,
+        rgba(16, 152, 247, 0.18) 0%,
+        rgba(8, 111, 227, 0.12) 24%,
+        rgba(0, 73, 198, 0.07) 40%,
+        rgba(0, 0, 49, 0.02) 56%,
+        rgba(0, 0, 0, 0) 74%);
   }
 
   /* Dégradé d'accent (bandeau / bouton spécial) */
@@ -223,6 +236,7 @@
       opacity: 0;
       transform: translateY(16px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);
@@ -237,15 +251,19 @@
   .fade-delay-1 {
     animation-delay: 0.08s;
   }
+
   .fade-delay-2 {
     animation-delay: 0.16s;
   }
+
   .fade-delay-3 {
     animation-delay: 0.24s;
   }
+
   .fade-delay-4 {
     animation-delay: 0.32s;
   }
+
   .fade-delay-5 {
     animation-delay: 0.4s;
   }
