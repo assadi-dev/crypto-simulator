@@ -13,7 +13,7 @@ export default function Home() {
         <span className="eyebrow">Simulateur crypto</span>
 
         <h1 className="text-balance text-4xl leading-[1.1] text-white sm:text-5xl">
-          Combien aurait rapporté votre investissement crypto ?
+          Le simulateur de calcul de plus-value crypto
         </h1>
 
         <p className="max-w-md text-pretty text-base text-muted-foreground">
