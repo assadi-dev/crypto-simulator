@@ -66,11 +66,12 @@ type ChartData = {
 function toChartData(timeline: BacktestPoint[]): ChartData[] {
   return timeline.map((point) => ({
     date: point.date.getTime(),
-    value: point.value,
-    invested: point.invested,
-    price: point.price,
-    units: point.units,
-    profit: point.value - point.invested,
+    // Arrondis pour des infobulles lisibles (l'échelle des courbes n'en pâtit pas).
+    value: Math.round(point.value),
+    invested: Math.round(point.invested),
+    price: Math.round(point.price),
+    units: Number(point.units.toFixed(6)),
+    profit: Math.round(point.value - point.invested),
   }));
 }
 
@@ -122,7 +123,7 @@ export function HistoriqueChart({ timeline }: { timeline: BacktestPoint[] }) {
 
   const config = {
     value: { label: "Valeur", color: COLOR.valeur },
-    investi: { label: "Investi", color: COLOR.investi },
+    invested: { label: "Investi", color: COLOR.investi },
     price: { label: "Prix", color: COLOR.prix },
     units: { label: "Acquis", color: COLOR.acquis },
   } satisfies ChartConfig;
@@ -186,7 +187,7 @@ export function HistoriqueChart({ timeline }: { timeline: BacktestPoint[] }) {
           yAxisId="eur"
           dataKey="invested"
           type="monotone"
-          stroke="var(--color-investi)"
+          stroke="var(--color-invested)"
           strokeWidth={1.8}
           dot={false}
         />
@@ -228,7 +229,7 @@ export function GainsPertesChart({ timeline }: { timeline: BacktestPoint[] }) {
   const config = {
     profit: { label: "Gains / Pertes", color: COLOR.gains },
     value: { label: "Valeur", color: COLOR.acquis },
-    investi: { label: "Investi", color: COLOR.investi },
+    invested: { label: "Investi", color: COLOR.investi },
     price: { label: "Prix", color: COLOR.prix },
   } satisfies ChartConfig;
 
@@ -290,7 +291,7 @@ export function GainsPertesChart({ timeline }: { timeline: BacktestPoint[] }) {
           yAxisId="eur"
           dataKey="invested"
           type="monotone"
-          stroke="var(--color-investi)"
+          stroke="var(--color-invested)"
           strokeWidth={1.8}
           dot={false}
         />

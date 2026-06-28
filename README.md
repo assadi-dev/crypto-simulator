@@ -1,17 +1,28 @@
 # Crypto Simulator
 
-Simulateur crypto qui permet de visualiser et projeter des scénarios d'investissement,
-inspiré de la direction artistique « fintech premium » de
+Simulateur de plus-value crypto inspiré de la direction artistique « fintech premium » de
 [simulateurs.sinvestir.fr](https://simulateurs.sinvestir.fr/) (voir [design.md](design.md)).
+
+## Aperçu
+
+![Démo — défilement de l'application](docs/demo.gif)
+
+| Bureau | Mobile |
+|---|---|
+| ![Vue bureau](docs/screenshot-hero.png) | ![Vue mobile](docs/screenshot-mobile.png) |
+
+![Graphiques « Historique » et « Gains / Pertes »](docs/screenshot-charts.png)
 
 ## Le simulateur
 
 On rejoue un investissement **passé** à partir d'un historique de prix quotidiens
-(« backtesting »), en une fois ou de façon récurrente (**DCA**) :
+(« backtesting »), en une fois ou de façon récurrente (**DCA**), avec **calcul en temps réel** :
 
 - **Entrées** : cryptomonnaie, montant, fréquence (unique / quotidien / hebdo / mensuel), période.
-- **Sorties** : total investi, valeur finale, plus/moins-value, performance (%) et **graphique**
-  d'évolution (valeur du portefeuille vs total investi).
+- **Résultats** (mis à jour à la volée) : total investi, quantité acquise, prix moyen
+  d'acquisition, capital final, performance (%).
+- **Graphiques** : « Historique » (Acquis / Investi / Prix / Valeur) et « Gains / Pertes »,
+  avec zoom temporel.
 
 Le composant est **autonome** : aucune base de données, aucune authentification et
 **aucune clé API** ne sont nécessaires pour le faire tourner.
@@ -28,18 +39,17 @@ Le composant est **autonome** : aucune base de données, aucune authentification
 | Framework | **Next.js 16** (App Router, Turbopack) + React 19 |
 | UI | **shadcn/ui** (Radix) + **Tailwind CSS v4** |
 | Formulaires | **React Hook Form** + **Zod v4** (`@hookform/resolvers`) |
-| Authentification | **Better Auth** |
-| Base de données | **Supabase** (PostgreSQL) |
-| Conteneurisation | **Docker Compose** (PostgreSQL + Supabase) |
+| Graphiques | **Recharts** |
+| Données | API publique **Binance** (prix EUR, sans clé) |
+| Déploiement | **Vercel** |
 
 ## Prérequis
 
-- [Node.js](https://nodejs.org/) **24+** et un gestionnaire de paquets (npm / pnpm / bun)
-- [Docker](https://www.docker.com/) + Docker Compose
+- [Node.js](https://nodejs.org/) **24+** (voir le champ `engines` de `package.json`).
 
 ## Démarrage
 
-Pour **lancer uniquement le simulateur**, ni Docker ni variables d'environnement ne sont requis :
+Aucune configuration ni variable d'environnement n'est requise :
 
 ```bash
 npm install
@@ -48,44 +58,18 @@ npm run dev
 
 L'app tourne sur http://localhost:3000.
 
-<details>
-<summary>Projet complet (Better Auth + Supabase)</summary>
-
-```bash
-cp .env.example .env   # renseigner les valeurs
-docker compose up -d   # PostgreSQL + Supabase Studio (http://localhost:54323)
-npm install
-npm run dev
-```
-
-</details>
-
-> **Dépannage — `Cannot find module '@tailwindcss/postcss'` / erreur 500 sur `/`**
-> Symptôme d'un `NODE_ENV=production` présent dans l'environnement : npm passe en mode
-> production et **n'installe pas les `devDependencies`** (Tailwind, PostCSS, TypeScript).
-> Sur un poste de dev, retirer cette variable globale, ou forcer l'install avec
-> `npm install --include=dev`. Sans incidence sur Vercel (les devDeps y sont installées pour le build).
-
-## Variables d'environnement
-
-> **Le simulateur ne requiert aucune variable d'environnement.** Les clés ci-dessous ne
-> concernent que le projet complet (Better Auth + Supabase), non nécessaire à la démo.
-
-Voir [.env.example](.env.example). Principales clés :
-
-- `DATABASE_URL` — chaîne de connexion PostgreSQL (utilisée par Better Auth / l'ORM)
-- `BETTER_AUTH_SECRET` — secret de signature des sessions Better Auth
-- `BETTER_AUTH_URL` — URL publique de l'app (ex. `http://localhost:3000`)
-- `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` — accès Supabase côté client
-- `CONTEXT7_API_KEY` — clé du serveur MCP Context7 (outillage de dev, voir [.mcp.json](.mcp.json))
+> Le dépôt inclut un `.npmrc` (`include=dev`) qui force l'installation des `devDependencies`
+> même si `NODE_ENV=production` est présent dans l'environnement — sans quoi Tailwind/PostCSS/
+> TypeScript seraient ignorés (erreur 500 « Cannot find module '@tailwindcss/postcss' »).
 
 ## Design system
 
 La direction artistique de [simulateurs.sinvestir.fr](https://simulateurs.sinvestir.fr/) est
 documentée dans [design.md](design.md) et intégrée dans [app/globals.css](app/globals.css) :
-les tokens de marque (bleu `#0049C6`, fond nuit `#080C16`, lueurs radiales, rayons) sont mappés
+les tokens de marque (bleu `#0049C6`, fond nuit `#080C16`, dégradé diagonal, rayons) sont mappés
 sur les variables sémantiques de shadcn/ui, donc **tous les composants en héritent automatiquement**.
-Polices : **Plus Jakarta Sans** (titres) + **Lexend** (corps). L'app est en **mode sombre** par défaut.
+Polices : **Plus Jakarta Sans** (titres) + **Lexend** (corps). Mode **sombre** par défaut,
+avec animations d'entrée (fade-in + slide-up).
 
 ## Embedding (aperçu intégré)
 
@@ -125,9 +109,13 @@ Le simulateur est conçu pour être embarqué depuis un autre site (ex. `sinvest
   source ne touche pas le front), évite les soucis CORS et **met en cache 1 h**.
 - **Moteur de calcul = fonction pure** ([lib/backtest.ts](lib/backtest.ts)) : sans dépendance
   réseau/UI, donc **testable** et réutilisable côté serveur. Recherche de prix par dichotomie,
-  timeline échantillonnée pour le graphique.
-- **Logique dans des hooks, composants présentationnels** : `useSimulatorForm` (validation) et
-  `useSimulation` (fetch + calcul + états) ; les composants se contentent d'afficher.
+  timeline échantillonnée pour les graphiques.
+- **Calcul en temps réel** ([app/_hooks/useLiveSimulation.ts](app/_hooks/useLiveSimulation.ts)) :
+  les prix ne sont rechargés que si la crypto ou la période change (avec cache) ; toute autre
+  modification recalcule le backtest **localement, sans appel réseau**. Le montant saisi est
+  **débouncé à 500 ms** ([app/_hooks/useDebouncedValue.ts](app/_hooks/useDebouncedValue.ts)).
+- **Logique dans des hooks, composants présentationnels** : le formulaire et les résultats se
+  contentent d'afficher l'état exposé par les hooks.
 - **Validation Zod en DTO** : un schéma unique sert de source de vérité, les types sont dérivés
   (`z.infer`) plutôt que dupliqués.
 - **Design system mappé sur shadcn** : les tokens de `design.md` alimentent les variables
@@ -137,12 +125,14 @@ Le simulateur est conçu pour être embarqué depuis un autre site (ex. `sinvest
 
 ## Structure
 
-- [design.md](design.md) — direction artistique de référence (palette, surfaces, lueurs)
+- [design.md](design.md) — direction artistique de référence (palette, surfaces, dégradés)
 - [app/globals.css](app/globals.css) — tokens du design system (Tailwind v4 `@theme` + thème shadcn)
-- [CLAUDE.md](CLAUDE.md) — guide projet + serveurs MCP disponibles
-- [docker-compose.yml](docker-compose.yml) — services PostgreSQL et Supabase
+- [lib/](lib/) — moteur de backtesting et formatage
+- [app/](app/) — page, route API et UI colocalisée du simulateur
 
-## Outillage (MCP)
+## Au-delà du simulateur
 
-Le projet déclare des serveurs MCP dans [.mcp.json](.mcp.json) (context7, shadcn, ui-kit,
-playwright, remotion). Voir [CLAUDE.md](CLAUDE.md) pour savoir quand les utiliser.
+Le dépôt contient aussi une amorce d'infrastructure (`docker-compose.yml` Supabase/PostgreSQL,
+`.env.example`) et une configuration de serveurs MCP ([.mcp.json](.mcp.json)) issues de la vision
+produit plus large décrite dans [CLAUDE.md](CLAUDE.md). **Rien de tout cela n'est nécessaire pour
+lancer ou déployer le simulateur.**
