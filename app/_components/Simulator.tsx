@@ -56,7 +56,7 @@ export function Simulator() {
             <CardHeader>
               <CardTitle className="text-xl">Gains / Pertes</CardTitle>
             </CardHeader>
-            <CardContent className="grid gap-4">
+            <CardContent className="flex flex-col gap-4">
               <GainsPertesChart timeline={result.timeline} />
               <p className="text-xs text-muted-foreground">
                 Simulation rétrospective basée sur des données historiques ; les

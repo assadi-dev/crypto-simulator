@@ -13,11 +13,10 @@ import {
 import {
   type ChartConfig,
   ChartContainer,
-  ChartLegend,
-  ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { cn } from "@/lib/utils";
 import type { BacktestPoint } from "@/lib/backtest";
 
 // Couleurs reprises des légendes du simulateur d'origine (Acquis or, Investi violet,
@@ -84,6 +83,39 @@ const tooltip = (
   />
 );
 
+type LegendItem = { label: string; dot: string };
+
+/**
+ * Légende rendue en flux DOM (au-dessus du graphique) plutôt que via la légende
+ * recharts : elle passe ainsi à la ligne sur petit écran au lieu de déborder.
+ */
+function ChartLegendRow({ items }: { items: LegendItem[] }) {
+  return (
+    <div className="mb-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
+      {items.map((item) => (
+        <span key={item.label} className="flex items-center gap-1.5">
+          <span className={cn("size-2 shrink-0 rounded-[2px]", item.dot)} />
+          {item.label}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+const historiqueLegend: LegendItem[] = [
+  { label: "Acquis", dot: "bg-[#e9b949]" },
+  { label: "Investi", dot: "bg-[#8b5cf6]" },
+  { label: "Prix", dot: "bg-[#9ca3af]" },
+  { label: "Valeur", dot: "bg-[#6db5f0]" },
+];
+
+const gainsLegend: LegendItem[] = [
+  { label: "Gains / Pertes", dot: "bg-[#22c55e]" },
+  { label: "Valeur", dot: "bg-[#e9b949]" },
+  { label: "Investi", dot: "bg-[#8b5cf6]" },
+  { label: "Prix", dot: "bg-[#9ca3af]" },
+];
+
 /** Chart 1 — « Historique » : Acquis (unités, axe gauche) + Investi / Prix / Valeur (€, axe droite). */
 export function HistoriqueChart({ timeline }: { timeline: BacktestPoint[] }) {
   const data = toChartData(timeline);
@@ -96,8 +128,10 @@ export function HistoriqueChart({ timeline }: { timeline: BacktestPoint[] }) {
   } satisfies ChartConfig;
 
   return (
-    <ChartContainer config={config} className="h-[320px] w-full">
-      <ComposedChart data={data} margin={{ left: 4, right: 4, top: 8 }}>
+    <div className="w-full min-w-0">
+      <ChartLegendRow items={historiqueLegend} />
+      <ChartContainer config={config} className="h-[320px] w-full">
+        <ComposedChart data={data} margin={{ left: 4, right: 4, top: 8 }}>
         <defs>
           <linearGradient id="fillValeur" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="var(--color-value)" stopOpacity={0.3} />
@@ -140,7 +174,6 @@ export function HistoriqueChart({ timeline }: { timeline: BacktestPoint[] }) {
           domain={["dataMin", "dataMax"]}
         />
         <ChartTooltip content={tooltip} />
-        <ChartLegend verticalAlign="top" content={<ChartLegendContent />} />
         <Area
           yAxisId="eur"
           dataKey="value"
@@ -182,8 +215,9 @@ export function HistoriqueChart({ timeline }: { timeline: BacktestPoint[] }) {
           fill="rgba(255,255,255,0.02)"
           tickFormatter={fmtYear}
         />
-      </ComposedChart>
-    </ChartContainer>
+        </ComposedChart>
+      </ChartContainer>
+    </div>
   );
 }
 
@@ -199,8 +233,10 @@ export function GainsPertesChart({ timeline }: { timeline: BacktestPoint[] }) {
   } satisfies ChartConfig;
 
   return (
-    <ChartContainer config={config} className="h-[320px] w-full">
-      <ComposedChart data={data} margin={{ left: 4, right: 8, top: 8 }}>
+    <div className="w-full min-w-0">
+      <ChartLegendRow items={gainsLegend} />
+      <ChartContainer config={config} className="h-[320px] w-full">
+        <ComposedChart data={data} margin={{ left: 4, right: 8, top: 8 }}>
         <defs>
           <linearGradient id="fillGains" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="var(--color-profit)" stopOpacity={0.28} />
@@ -234,7 +270,6 @@ export function GainsPertesChart({ timeline }: { timeline: BacktestPoint[] }) {
           domain={["dataMin", "dataMax"]}
         />
         <ChartTooltip content={tooltip} />
-        <ChartLegend verticalAlign="top" content={<ChartLegendContent />} />
         <Area
           yAxisId="eur"
           dataKey="profit"
@@ -276,7 +311,8 @@ export function GainsPertesChart({ timeline }: { timeline: BacktestPoint[] }) {
           fill="rgba(255,255,255,0.02)"
           tickFormatter={fmtYear}
         />
-      </ComposedChart>
-    </ChartContainer>
+        </ComposedChart>
+      </ChartContainer>
+    </div>
   );
 }

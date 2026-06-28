@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "PowerShell(\"cleaned\")"
+      "PowerShell(\"cleaned\")",
+      "Bash(grep -qiE \"Ready in\" /tmp/cs-dev.log 2>/dev/null && curl -s -o /dev/null -w \"dev:%{http_code}\\\\n\" http://localhost:3000 2>/dev/null || echo \"need-restart\")",
+      "Read(//tmp/**)"
     ]
   }
 }

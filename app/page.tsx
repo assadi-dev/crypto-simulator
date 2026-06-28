@@ -13,7 +13,7 @@ export default function Home() {
         <div className="animate-fade-up flex items-center justify-center gap-3 sm:gap-4">
           <span
             aria-hidden
-            className="h-px w-8 bg-linear-to-l from-brand-bright/70 to-transparent sm:w-16"
+            className="h-px w-16 bg-linear-to-l from-brand-bright/70 to-transparent sm:w-16"
           />
           <h1 className="uppercase text-no animate-fade-up  text-balance text-xl lg:text-4xl leading-[1.1] text-white sm:text-4xl">
             Simulateur plus-value crypto
@@ -21,7 +21,7 @@ export default function Home() {
 
           <span
             aria-hidden
-            className="h-px w-8 bg-linear-to-r from-brand-bright/70 to-transparent sm:w-16"
+            className="h-px w-16 bg-linear-to-r from-brand-bright/70 to-transparent sm:w-16"
           />
         </div>
 
