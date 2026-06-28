@@ -8,15 +8,16 @@ inspiré de la direction artistique « fintech premium » de
 
 | Couche | Choix |
 |---|---|
-| Framework | **Next.js 16** (App Router) |
-| UI | **shadcn/ui** + Tailwind CSS |
+| Framework | **Next.js 16** (App Router, Turbopack) + React 19 |
+| UI | **shadcn/ui** (Radix) + **Tailwind CSS v4** |
+| Formulaires | **React Hook Form** + **Zod v4** (`@hookform/resolvers`) |
 | Authentification | **Better Auth** |
 | Base de données | **Supabase** (PostgreSQL) |
 | Conteneurisation | **Docker Compose** (PostgreSQL + Supabase) |
 
 ## Prérequis
 
-- [Node.js](https://nodejs.org/) 20+ et un gestionnaire de paquets (npm / pnpm / bun)
+- [Node.js](https://nodejs.org/) **24+** et un gestionnaire de paquets (npm / pnpm / bun)
 - [Docker](https://www.docker.com/) + Docker Compose
 
 ## Démarrage
@@ -37,6 +38,12 @@ npm run dev
 
 L'app tourne sur http://localhost:3000 et Supabase Studio sur http://localhost:54323.
 
+> **Dépannage — `Cannot find module '@tailwindcss/postcss'` / erreur 500 sur `/`**
+> Symptôme d'un `NODE_ENV=production` présent dans l'environnement : npm passe en mode
+> production et **n'installe pas les `devDependencies`** (Tailwind, PostCSS, TypeScript).
+> Sur un poste de dev, retirer cette variable globale, ou forcer l'install avec
+> `npm install --include=dev`. Sans incidence sur Vercel (les devDeps y sont installées pour le build).
+
 ## Variables d'environnement
 
 Voir [.env.example](.env.example). Principales clés :
@@ -47,9 +54,18 @@ Voir [.env.example](.env.example). Principales clés :
 - `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` — accès Supabase côté client
 - `CONTEXT7_API_KEY` — clé du serveur MCP Context7 (outillage de dev, voir [.mcp.json](.mcp.json))
 
+## Design system
+
+La direction artistique de [simulateurs.sinvestir.fr](https://simulateurs.sinvestir.fr/) est
+documentée dans [design.md](design.md) et intégrée dans [app/globals.css](app/globals.css) :
+les tokens de marque (bleu `#0049C6`, fond nuit `#080C16`, lueurs radiales, rayons) sont mappés
+sur les variables sémantiques de shadcn/ui, donc **tous les composants en héritent automatiquement**.
+Polices : **Plus Jakarta Sans** (titres) + **Lexend** (corps). L'app est en **mode sombre** par défaut.
+
 ## Structure
 
 - [design.md](design.md) — direction artistique de référence (palette, surfaces, lueurs)
+- [app/globals.css](app/globals.css) — tokens du design system (Tailwind v4 `@theme` + thème shadcn)
 - [CLAUDE.md](CLAUDE.md) — guide projet + serveurs MCP disponibles
 - [docker-compose.yml](docker-compose.yml) — services PostgreSQL et Supabase
 
