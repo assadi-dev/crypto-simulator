@@ -38,7 +38,7 @@ export function SimulatorForm({ form }: SimulatorFormProps) {
   } = form;
 
   return (
-    <Card className="w-full border-white/10 bg-white/4 backdrop-blur-xl">
+    <Card className="h-full w-full border-white/10 bg-white/4 backdrop-blur-xl">
       <CardHeader>
         <CardTitle className="text-xl">Simulation</CardTitle>
         <CardDescription>

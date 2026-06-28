@@ -36,7 +36,7 @@ export function KeyFigures({
   const isGain = (result?.profit ?? 0) >= 0;
 
   return (
-    <Card className="w-full border-white/10 bg-white/4 backdrop-blur-xl">
+    <Card className="h-full w-full border-white/10 bg-white/4 backdrop-blur-xl">
       <CardHeader className="flex-row items-center justify-between">
         <CardTitle className="text-xl">Chiffres clés</CardTitle>
         {isLoading && (

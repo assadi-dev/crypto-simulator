@@ -31,7 +31,7 @@ export function Simulator() {
 
   return (
     <div className="flex w-full flex-col gap-6 text-left">
-      <div className="grid items-start gap-6 md:grid-cols-2">
+      <div className="grid items-stretch gap-6 md:grid-cols-2">
         <SimulatorForm form={form} />
         <KeyFigures
           result={result}
