@@ -215,3 +215,44 @@
     background: linear-gradient(to right, var(--brand), var(--brand-deep));
   }
 }
+
+/* Animations d'entrée : fade-in + slide-up, avec décalage (stagger). */
+@layer utilities {
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-up {
+    animation: fade-up 0.7s cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+
+  /* Décalages successifs (doivent suivre .animate-fade-up pour surcharger le delay). */
+  .fade-delay-1 {
+    animation-delay: 0.08s;
+  }
+  .fade-delay-2 {
+    animation-delay: 0.16s;
+  }
+  .fade-delay-3 {
+    animation-delay: 0.24s;
+  }
+  .fade-delay-4 {
+    animation-delay: 0.32s;
+  }
+  .fade-delay-5 {
+    animation-delay: 0.4s;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-fade-up {
+      animation: none;
+    }
+  }
+}

@@ -10,13 +10,13 @@ export default function Home() {
       />
 
       <section className="relative z-10 flex w-full max-w-5xl flex-col items-center gap-8 text-center">
-        <span className="eyebrow">Simulateur crypto</span>
+        <span className="eyebrow animate-fade-up">Simulateur crypto</span>
 
-        <h1 className="text-balance text-4xl leading-[1.1] text-white sm:text-5xl">
+        <h1 className="animate-fade-up fade-delay-1 text-balance text-4xl leading-[1.1] text-white sm:text-5xl">
           Le simulateur de calcul de plus-value crypto
         </h1>
 
-        <p className="max-w-md text-pretty text-base text-muted-foreground">
+        <p className="animate-fade-up fade-delay-2 max-w-md text-pretty text-base text-muted-foreground">
           Choisissez une cryptomonnaie, un montant et une période : le simulateur
           rejoue la performance passée à partir de données historiques.
         </p>

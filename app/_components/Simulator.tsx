@@ -43,7 +43,7 @@ export function Simulator() {
 
       {result && result.timeline.length > 0 && (
         <>
-          <Card className="w-full border-white/10 bg-white/4 backdrop-blur-xl">
+          <Card className="animate-fade-up w-full border-white/10 bg-white/4 backdrop-blur-xl">
             <CardHeader>
               <CardTitle className="text-xl">Historique</CardTitle>
             </CardHeader>
@@ -52,7 +52,7 @@ export function Simulator() {
             </CardContent>
           </Card>
 
-          <Card className="w-full border-white/10 bg-white/4 backdrop-blur-xl">
+          <Card className="animate-fade-up fade-delay-1 w-full border-white/10 bg-white/4 backdrop-blur-xl">
             <CardHeader>
               <CardTitle className="text-xl">Gains / Pertes</CardTitle>
             </CardHeader>
