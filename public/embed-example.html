@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Exemple d'intégration — Simulateur crypto S'investir</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: system-ui, sans-serif;
+        background: #f5f6f8;
+        color: #1a2233;
+        padding: 32px 16px;
+      }
+      .host {
+        max-width: 760px;
+        margin: 0 auto;
+      }
+      h1 {
+        font-size: 1.25rem;
+      }
+      p {
+        color: #5b6577;
+        font-size: 0.95rem;
+      }
+      iframe {
+        width: 100%;
+        border: 0;
+        border-radius: 16px;
+        height: 360px; /* hauteur initiale basse, agrandie dynamiquement via postMessage */
+        transition: height 0.2s ease;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="host">
+      <h1>Aperçu intégré du simulateur</h1>
+      <p>
+        Cette page simule un site hôte (ex. sinvestir.fr) qui embarque le
+        simulateur via une simple <code>&lt;iframe&gt;</code>. La hauteur est
+        ajustée automatiquement.
+      </p>
+      <iframe
+        id="simulator"
+        src="/embed"
+        title="Simulateur crypto S'investir"
+        loading="lazy"
+      ></iframe>
+    </div>
+
+    <script>
+      // Redimensionne l'iframe selon la hauteur publiée par le simulateur.
+      window.addEventListener("message", (event) => {
+        const data = event.data;
+        if (data && data.type === "sinvestir-simulator:height" && data.height) {
+          document.getElementById("simulator").style.height = data.height + "px";
+        }
+      });
+    </script>
+  </body>
+</html>
