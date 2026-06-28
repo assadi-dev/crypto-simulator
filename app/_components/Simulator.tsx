@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/card";
 
 import { simulatorSchema } from "../dto/simulator.schema";
+import { useDebouncedValue } from "../_hooks/useDebouncedValue";
 import { useLiveSimulation } from "../_hooks/useLiveSimulation";
 import { useSimulatorForm } from "../_hooks/useSimulatorForm";
 import { CRYPTO_OPTIONS } from "../_types/simulator";
@@ -19,9 +20,15 @@ import { SimulatorForm } from "./SimulatorForm";
 export function Simulator() {
   const { form } = useSimulatorForm();
 
-  // Valeurs live du formulaire ; validées avant tout calcul.
+  // Valeurs live du formulaire. Le montant (champ saisi au clavier) est débouncé
+  // à 500 ms pour ne pas recalculer à chaque frappe ; les selects/dates (clics)
+  // restent instantanés.
   const values = form.watch();
-  const parsed = simulatorSchema.safeParse(values);
+  const debouncedAmount = useDebouncedValue(values.amount, 500);
+  const parsed = simulatorSchema.safeParse({
+    ...values,
+    amount: debouncedAmount,
+  });
   const input = parsed.success ? parsed.data : null;
 
   const { result, status, error } = useLiveSimulation(input);
