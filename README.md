@@ -41,7 +41,7 @@ Le composant est **autonome** : aucune base de données, aucune authentification
 | Formulaires | **React Hook Form** + **Zod v4** (`@hookform/resolvers`) |
 | Graphiques | **Recharts** |
 | Données | API publique **Binance** (prix EUR, sans clé) |
-| Déploiement | **Vercel** |
+| Déploiement | **Dokploy** (PaaS auto-hébergé, build Docker/Nixpacks) |
 
 ## Prérequis
 
@@ -134,8 +134,10 @@ Le simulateur est conçu pour être embarqué depuis un autre site (ex. `sinvest
 
 ## Partis pris techniques
 
-- **Next.js + Vercel** : aligné sur la stack interne S'investir → intégration directe dans
-  l'infra, et le simulateur peut prendre la place de l'actuel sur `simulateurs.sinvestir.fr`.
+- **Next.js déployé sur Dokploy** : PaaS auto-hébergé (build Docker/Nixpacks) → maîtrise de
+  l'infra sans dépendre d'un hébergeur propriétaire, tout en gardant une stack Next.js alignée
+  sur celle de S'investir. Le simulateur peut prendre la place de l'actuel sur
+  `simulateurs.sinvestir.fr`.
 - **Source de prix = Binance (sans clé)** : CoinGecko et CryptoCompare exigent désormais une
   clé API (réponses `401` en accès anonyme), et le tier démo de CoinGecko plafonne l'historique
   à 365 jours. Binance expose des paires EUR et un historique long **sans authentification**,
