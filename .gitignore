@@ -52,3 +52,6 @@ next-env.d.ts
 
 # MCP / Playwright artefacts
 .playwright-mcp/
+/test-results/
+/playwright-report/
+/playwright/.cache/

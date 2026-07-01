@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
 
+import { checkRateLimit, parsePositiveInt } from "@/lib/rate-limit";
+
+export const dynamic = "force-dynamic";
+
 /**
  * Proxy de prix historiques quotidiens via l'API publique Binance (sans clé).
  * Évite les soucis CORS et centralise la mise en cache. Renvoie un tableau
@@ -18,6 +22,13 @@ const BINANCE_SYMBOLS: Record<string, string> = {
 
 const DAY_MS = 86_400_000;
 const BINANCE_LIMIT = 1000;
+
+// Rate limit configurable par env (lu au démarrage) : nb de requêtes par IP et
+// durée de fenêtre en secondes. Valeurs par défaut : 30 requêtes / 60 s.
+const RATE_LIMIT = {
+  limit: parsePositiveInt(process.env.PRICES_RATE_LIMIT, 30),
+  windowMs: parsePositiveInt(process.env.PRICES_RATE_WINDOW, 60) * 1000,
+};
 
 type Kline = [number, string, string, string, string, ...unknown[]];
 
@@ -55,6 +66,24 @@ async function fetchKlines(
 }
 
 export async function GET(request: Request) {
+  // Garde-fou anti-abus sur ce proxy public (limite configurable par env).
+  const rate = checkRateLimit(request, "prices", RATE_LIMIT);
+  if (!rate.success) {
+    const retryAfter = Math.max(1, Math.ceil((rate.reset - Date.now()) / 1000));
+    return NextResponse.json(
+      { error: "Trop de requêtes. Réessayez dans quelques instants." },
+      {
+        status: 429,
+        headers: {
+          "Retry-After": String(retryAfter),
+          "RateLimit-Limit": String(rate.limit),
+          "RateLimit-Remaining": String(rate.remaining),
+          "RateLimit-Reset": String(Math.ceil(rate.reset / 1000)),
+        },
+      },
+    );
+  }
+
   const { searchParams } = new URL(request.url);
   const coin = searchParams.get("coin");
   const from = Number(searchParams.get("from"));

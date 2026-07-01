@@ -1,4 +1,4 @@
-import { defineConfig } from "vitest/config";
+import { configDefaults, defineConfig } from "vitest/config";
 
 /**
  * Tests unitaires de la logique métier (moteur de backtest, formatage, schémas)
@@ -15,6 +15,8 @@ export default defineConfig({
   test: {
     environment: "node",
     include: ["**/*.{test,spec}.ts"],
+    // Les tests end-to-end Playwright (dossier e2e/) ont leur propre runner.
+    exclude: [...configDefaults.exclude, "e2e/**"],
     globals: true,
     env: {
       NODE_ENV: "test",

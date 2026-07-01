@@ -62,6 +62,41 @@ L'app tourne sur http://localhost:3000.
 > même si `NODE_ENV=production` est présent dans l'environnement — sans quoi Tailwind/PostCSS/
 > TypeScript seraient ignorés (erreur 500 « Cannot find module '@tailwindcss/postcss' »).
 
+### Configuration optionnelle
+
+Le rate limiting de la route `/api/prices` s'ajuste sans redéploiement de code via deux
+variables d'environnement (valeurs par défaut : **30 requêtes / 60 s** par IP) :
+
+| Variable | Rôle | Défaut |
+|---|---|---|
+| `PRICES_RATE_LIMIT` | Requêtes autorisées par IP et par fenêtre | `30` |
+| `PRICES_RATE_WINDOW` | Durée de la fenêtre, en **secondes** | `60` |
+
+Voir [.env.example](.env.example).
+
+## Tests
+
+Deux niveaux de tests, séparés par runner :
+
+| Commande | Type | Portée |
+|---|---|---|
+| `npm test` | **Unitaires** ([Vitest](https://vitest.dev/)) | logique métier pure et hooks |
+| `npm run test:watch` | Unitaires (watch) | idem, en mode interactif |
+| `npm run test:e2e` | **End-to-end** ([Playwright](https://playwright.dev/)) | parcours navigateur réel |
+
+**Unitaires** (`*.test.ts`) — moteur de backtest ([lib/backtest.test.ts](lib/backtest.test.ts)),
+validation Zod ([app/dto/simulator.schema.test.ts](app/dto/simulator.schema.test.ts)), rate
+limiting ([lib/rate-limit.test.ts](lib/rate-limit.test.ts)), formatage et hook temps réel
+([app/_hooks/useLiveSimulation.test.ts](app/_hooks/useLiveSimulation.test.ts)). Environnement
+`node`, sauf les hooks (jsdom via docblock). NODE_ENV est forcé à `test` dans
+[vitest.config.ts](vitest.config.ts) (l'environnement définit `NODE_ENV=production`, ce qui
+chargerait le build de production de React, dépourvu de l'API `act`).
+
+**End-to-end** (dossier [e2e/](e2e/)) — saisie d'un montant et défilement de la page d'accueil,
+et page `/embed`. Playwright démarre le serveur de dev automatiquement. La route `/api/prices`
+est **interceptée** ([e2e/utils.ts](e2e/utils.ts)) pour un rendu déterministe, sans dépendre de
+la disponibilité de Binance. Prérequis la première fois : `npx playwright install chromium`.
+
 ## Design system
 
 La direction artistique de [simulateurs.sinvestir.fr](https://simulateurs.sinvestir.fr/) est
@@ -107,6 +142,12 @@ Le simulateur est conçu pour être embarqué depuis un autre site (ex. `sinvest
   ce qui garde la démo **« clone & run »**. La récupération passe par une **route API interne**
   ([app/api/prices/route.ts](app/api/prices/route.ts)) qui isole le fournisseur (changer de
   source ne touche pas le front), évite les soucis CORS et **met en cache 1 h**.
+  Le proxy étant public, il est protégé par un **rate limiting par IP**
+  ([lib/rate-limit.ts](lib/rate-limit.ts), en mémoire, fenêtre fixe) : au-delà de la
+  limite, la route répond `429` avec un en-tête `Retry-After`. La limite est
+  **configurable par variables d'environnement** (voir ci-dessous). _Note : l'état
+  étant en mémoire du process, la limite s'applique par instance ; en déploiement
+  multi-instances, remonter vers un store partagé (Redis / Upstash)._
 - **Moteur de calcul = fonction pure** ([lib/backtest.ts](lib/backtest.ts)) : sans dépendance
   réseau/UI, donc **testable** et réutilisable côté serveur. Recherche de prix par dichotomie,
   timeline échantillonnée pour les graphiques.
