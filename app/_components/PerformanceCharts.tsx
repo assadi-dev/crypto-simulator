@@ -1,5 +1,6 @@
 "use client";
 
+import { memo, useMemo } from "react";
 import {
   Area,
   Brush,
@@ -118,8 +119,12 @@ const gainsLegend: LegendItem[] = [
 ];
 
 /** Chart 1 — « Historique » : Acquis (unités, axe gauche) + Investi / Prix / Valeur (€, axe droite). */
-export function HistoriqueChart({ timeline }: { timeline: BacktestPoint[] }) {
-  const data = toChartData(timeline);
+export const HistoriqueChart = memo(function HistoriqueChart({
+  timeline,
+}: {
+  timeline: BacktestPoint[];
+}) {
+  const data = useMemo(() => toChartData(timeline), [timeline]);
 
   const config = {
     value: { label: "Valeur", color: COLOR.valeur },
@@ -220,11 +225,15 @@ export function HistoriqueChart({ timeline }: { timeline: BacktestPoint[] }) {
       </ChartContainer>
     </div>
   );
-}
+});
 
 /** Chart 2 — « Gains / Pertes » : Gains/Pertes (aire verte) + Valeur / Investi / Prix (€). */
-export function GainsPertesChart({ timeline }: { timeline: BacktestPoint[] }) {
-  const data = toChartData(timeline);
+export const GainsPertesChart = memo(function GainsPertesChart({
+  timeline,
+}: {
+  timeline: BacktestPoint[];
+}) {
+  const data = useMemo(() => toChartData(timeline), [timeline]);
 
   const config = {
     profit: { label: "Gains / Pertes", color: COLOR.gains },
@@ -316,4 +325,4 @@ export function GainsPertesChart({ timeline }: { timeline: BacktestPoint[] }) {
       </ChartContainer>
     </div>
   );
-}
+});

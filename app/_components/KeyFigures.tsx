@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import {
   CircleDollarSign,
   Coins,
@@ -27,7 +28,7 @@ type KeyFiguresProps = {
 };
 
 /** Panneau de résultats en temps réel (à droite du formulaire). */
-export function KeyFigures({
+export const KeyFigures = memo(function KeyFigures({
   result,
   symbol,
   isLoading = false,
@@ -86,7 +87,7 @@ export function KeyFigures({
       </CardContent>
     </Card>
   );
-}
+});
 
 function Row({
   icon: Icon,

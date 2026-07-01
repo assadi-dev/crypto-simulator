@@ -13,7 +13,7 @@ function getDefaultValues(): SimulatorInput {
 
   return {
     crypto: "bitcoin",
-    amount: 100,
+    amount: 50,
     frequency: "monthly",
     startDate,
     endDate,
