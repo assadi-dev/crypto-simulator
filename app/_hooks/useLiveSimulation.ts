@@ -113,10 +113,14 @@ export function useLiveSimulation(input: SimulatorInput | null) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [signature, prices]);
 
-  // Conserve le dernier résultat valide pour un affichage sans clignotement.
-  const lastResultRef = useRef<BacktestResult | null>(null);
-  if (computed) lastResultRef.current = computed;
-  const result = computed ?? lastResultRef.current;
+  // Conserve le dernier résultat valide pour un affichage sans clignotement :
+  // pendant une saisie transitoirement invalide, `computed` est null et on
+  // retombe sur le dernier résultat mémorisé. Mise à jour pendant le rendu
+  // (pattern React « storing information from previous renders ») : React
+  // ré-exécute le rendu immédiatement sans effet ni accès ref.
+  const [lastResult, setLastResult] = useState<BacktestResult | null>(null);
+  if (computed && computed !== lastResult) setLastResult(computed);
+  const result = computed ?? lastResult;
 
   return { result, status, error };
 }
