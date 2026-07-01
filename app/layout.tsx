@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Lexend, Plus_Jakarta_Sans, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -27,6 +27,10 @@ export const metadata: Metadata = {
   title: "Simulateur Crypto-monnaie | S'investir",
   description:
     "Simulez la performance d'un investissement en cryptomonnaie (one-shot ou DCA) à partir de données historiques.",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#080C16",
 };
 
 export default function RootLayout({
